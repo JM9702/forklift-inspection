@@ -1,0 +1,440 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <title>Forklift Inspection</title>  
+  <style>  
+    body {  
+      font-family: Arial, sans-serif;  
+      margin: 0;  
+      padding: 0;  
+      display: flex;  
+      justify-content: center;  
+      align-items: center;  
+      height: 100vh;  
+      background-color: #FFA500;  
+    }  
+    .container {  
+      background: #fff;  
+      padding: 20px;  
+      border-radius: 8px;  
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  
+      width: 100%;  
+      max-width: 800px;  
+    }  
+    h1 {  
+      text-align: center;  
+    }  
+    .hidden {  
+      display: none;  
+    }  
+    .form-group {  
+      margin: 15px 0;  
+    }  
+    .form-group label {  
+      display: block;  
+      font-size: 14px;  
+      margin-bottom: 5px;  
+    }  
+    .form-group input, .form-group select {  
+      width: 100%;  
+      padding: 8px;  
+      font-size: 14px;  
+      border: 1px solid #ddd;  
+      border-radius: 4px;  
+    }  
+    .checklist-container {  
+      display: flex;  
+      justify-content: space-between;  
+    }  
+    .checklist {  
+      width: 48%;  
+    }  
+    .checklist-item {  
+      display: flex;  
+      justify-content: space-between;  
+      align-items: center;  
+      margin: 10px 0;  
+      text-align: left;  
+    }  
+    .checklist-item span {  
+      flex-grow: 1;  
+    }  
+    .checklist-item button {  
+      margin-left: 5px;  
+      padding: 5px 10px;  
+      border: none;  
+      border-radius: 4px;  
+      cursor: pointer;  
+      transition: background-color 0.3s, transform 0.1s;  
+    }  
+    .checklist-item button:active {  
+      transform: scale(0.95);  
+    }  
+    .pass {  
+      background-color: #4caf50;  
+      color: #fff;  
+    }  
+    .fail {  
+      background-color: #f44336;  
+      color: #fff;  
+    }  
+    .disabled {  
+      opacity: 0.6;  
+      cursor: not-allowed;  
+    }  
+    .clicked {  
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);  
+    }  
+    #submit-button {  
+      width: 100%;  
+      padding: 10px;  
+      background-color: #007bff;  
+      color: #fff;  
+      border: none;  
+      border-radius: 4px;  
+      cursor: pointer;  
+      font-size: 16px;  
+    }  
+    .comment-area {  
+      margin-top: 10px;  
+    }  
+    .tab-container {  
+      display: flex;  
+      justify-content: space-between;  
+      margin-bottom: 20px;  
+    }  
+    .tab {  
+      padding: 10px;  
+      border: none;  
+      border-radius: 4px;  
+      cursor: pointer;  
+      font-size: 16px;  
+    }  
+    .active-tab {  
+      background-color: #007bff;  
+      color: #fff;  
+    }  
+    #records-list {  
+      padding: 20px;  
+    }  
+    .record {  
+      margin-bottom: 20px;  
+      padding: 10px;  
+      border: 1px solid #ddd;  
+      border-radius: 4px;  
+      background-color: #f9f9f9;  
+    }  
+  </style>  
+</head>  
+<body>  
+  <div class="container">  
+    <div class="tab-container">  
+      <button class="tab active-tab" id="inspection-tab">Inspection</button>  
+      <button class="tab" id="records-tab">Records</button>  
+    </div>  
+    <div id="driver-info">  
+      <h1>Forklift Inspection</h1>  
+      <form id="info-form">  
+        <div class="form-group">  
+          <label for="driver-name">Driver's Name:</label>  
+          <input type="text" id="driver-name" name="driver-name" required>  
+        </div>  
+        <div class="form-group">  
+          <label for="forklift-number">Forklift Number:</label>  
+          <input type="text" id="forklift-number" name="forklift-number" required>  
+        </div>  
+        <div class="form-group">  
+          <label for="shift-type">Shift Type:</label>  
+          <select id="shift-type" name="shift-type" required>  
+           <option value="morning">Morning</option>  
+           <option value="swing">Swing</option>  
+           <option value="graveyard">Graveyard</option>  
+          </select>  
+        </div>  
+        <button type="submit" id="start-inspection">Start Inspection</button>  
+        <button type="reset" id="reset-form">Reset Form</button>  
+      </form>  
+    </div>  
+      
+    <div id="inspection-checklist" class="hidden">  
+      <h1>Forklift Inspection</h1>  
+      <div class="checklist-container">  
+        <!-- Visual Inspection Checklist -->  
+        <div class="checklist">  
+          <h2>Visual Inspection</h2>  
+          <div id="checklist">  
+           <div class="checklist-item">  
+             <span>Check tires</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Check fluid levels</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Check belt</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Check hydraulic controls</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Check overhead guard</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Check fork</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Check seat belt</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Check lift chains</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Check propane</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Check bracket</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+          </div>  
+        </div>  
+        <!-- Operational Inspection Checklist -->  
+        <div class="checklist">  
+          <h2>Operational Inspection</h2>  
+          <div id="operational-checklist">  
+           <div class="checklist-item">  
+             <span>Check horn</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Check lights</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Engine start</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Lift controls</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Drive controls</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Parking brake</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Unusual noise</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Tilt control</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Forward driving</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+           <div class="checklist-item">  
+             <span>Reverse driving</span>  
+             <button class="pass">Pass</button>  
+             <button class="fail">Fail</button>  
+           </div>  
+          </div>  
+        </div>  
+      </div>  
+      <button id="submit-button">Submit</button>  
+      <button id="reset-checklist">Reset Checklist</button>  
+    </div>  
+    <div id="records" class="hidden">  
+      <h1>Past Inspection Records</h1>  
+      <div id="records-list"></div>  
+    </div>  
+  </div>  
+   
+  <script>  
+    const infoForm = document.getElementById('info-form');  
+    const driverInfo = document.getElementById('driver-info');  
+    const inspectionChecklist = document.getElementById('inspection-checklist');  
+    const records = document.getElementById('records');  
+    const inspectionTab = document.getElementById('inspection-tab');  
+    const recordsTab = document.getElementById('records-tab');  
+    const recordsList = document.getElementById('records-list');  
+  
+    let inspectionRecords = JSON.parse(localStorage.getItem('inspectionRecords')) || [];  
+  
+    infoForm.addEventListener('submit', (e) => {  
+      e.preventDefault();  
+      driverInfo.classList.add('hidden');  
+      inspectionChecklist.classList.remove('hidden');  
+    });  
+  
+    document.getElementById('reset-form').addEventListener('click', () => {  
+      infoForm.reset();  
+    });  
+  
+    document.getElementById('reset-checklist').addEventListener('click', () => {  
+      const checklistItems = document.querySelectorAll('.checklist-item');  
+      checklistItems.forEach(item => {  
+        const passButton = item.querySelector('.pass');  
+        const failButton = item.querySelector('.fail');  
+        const commentBox = item.querySelector('.comment-area');  
+        if (commentBox) {  
+          commentBox.remove();  
+        }  
+        passButton.classList.remove('disabled');  
+        failButton.classList.remove('disabled');  
+        passButton.classList.remove('clicked');  
+        failButton.classList.remove('clicked');  
+      });  
+    });  
+  
+    document.querySelectorAll('.checklist-item').forEach(item => {  
+      const passButton = item.querySelector('.pass');  
+      const failButton = item.querySelector('.fail');  
+      let commentBox;  
+  
+      failButton.addEventListener('click', (e) => {  
+        if (!commentBox) {  
+          commentBox = document.createElement('textarea');  
+          commentBox.className = 'comment-area';  
+          commentBox.placeholder = 'Enter comment for failure';  
+          item.appendChild(commentBox);  
+        }  
+        const buttons = item.querySelectorAll('button');  
+        buttons.forEach(btn => btn.classList.add('disabled'));  
+        failButton.classList.remove('disabled');  
+        failButton.classList.add('clicked');  
+        setTimeout(() => failButton.classList.remove('clicked'), 200);  
+      });  
+  
+      passButton.addEventListener('click', () => {  
+        if (commentBox) {  
+          commentBox.remove();  
+          commentBox = null;  
+        }  
+        const buttons = item.querySelectorAll('button');  
+        buttons.forEach(btn => btn.classList.add('disabled'));  
+        passButton.classList.remove('disabled');  
+        passButton.classList.add('clicked');  
+        setTimeout(() => passButton.classList.remove('clicked'), 200);  
+      });  
+    });  
+  
+    const submitButton = document.getElementById('submit-button');  
+    submitButton.addEventListener('click', () => {  
+      const incompleteFails = Array.from(document.querySelectorAll('.checklist-item')).some(item => {  
+        const failButton = item.querySelector('.fail.disabled');  
+        const commentBox = item.querySelector('.comment-area');  
+        return failButton && commentBox && !commentBox.value.trim();  
+      });  
+  
+      if (incompleteFails) {  
+        alert('Please provide comments for all failed items before submitting.');  
+        return;  
+      }  
+  
+      const driverName = document.getElementById('driver-name').value;  
+      const forkliftNumber = document.getElementById('forklift-number').value;  
+      const shiftType = document.getElementById('shift-type').value;  
+      const checklistItems = document.querySelectorAll('.checklist-item');  
+      let report = `Driver's Name: ${driverName}\nForklift Number: ${forkliftNumber}\nShift Type: ${shiftType}\n\n`;  
+      checklistItems.forEach(item => {  
+        const passButton = item.querySelector('.pass');  
+        const failButton = item.querySelector('.fail');  
+        const commentBox = item.querySelector('.comment-area');  
+        const itemName = item.querySelector('span').textContent;  
+        if (passButton.classList.contains('clicked')) {  
+          report += `${itemName}: Pass\n`;  
+        } else if (failButton.classList.contains('clicked')) {  
+          report += `${itemName}: Fail\n`;  
+          if (commentBox) {  
+           report += `Comment: ${commentBox.value}\n`;  
+          }  
+        }  
+      });  
+  
+      const timestamp = new Date().toLocaleString();  
+      inspectionRecords.push({ timestamp, report });  
+      localStorage.setItem('inspectionRecords', JSON.stringify(inspectionRecords));  
+      displayRecords();  
+  
+      alert('Inspection submitted successfully!');  
+      driverInfo.classList.remove('hidden');  
+      inspectionChecklist.classList.add('hidden');  
+      document.getElementById('info-form').reset();  
+      const checklistItemsReset = document.querySelectorAll('.checklist-item');  
+      checklistItemsReset.forEach(item => {  
+        const passButton = item.querySelector('.pass');  
+        const failButton = item.querySelector('.fail');  
+        const commentBox = item.querySelector('.comment-area');  
+        if (commentBox) {  
+          commentBox.remove();  
+        }  
+        passButton.classList.remove('disabled');  
+        failButton.classList.remove('disabled');  
+        passButton.classList.remove('clicked');  
+        failButton.classList.remove('clicked');  
+      });  
+    });  
+  
+    function displayRecords() {  
+      recordsList.innerHTML = '';  
+      inspectionRecords.forEach((record, index) => {  
+       const recordElement = document.createElement('div');  
+       recordElement.className = 'record';  
+       recordElement.innerHTML = `Record ${index + 1} - ${record.timestamp}:\n${record.report}`;  
+       recordsList.appendChild(recordElement);  
+      });  
+    }  
+  
+    inspectionTab.addEventListener('click', () => {  
+      inspectionTab.classList.add('active-tab');  
+      recordsTab.classList.remove('active-tab');  
+      inspectionChecklist.classList.remove('hidden');  
+      records.classList.add('hidden');  
+    });  
+  
+    recordsTab.addEventListener('click', () => {  
+      recordsTab.classList.add('active-tab');  
+      inspectionTab.classList.remove('active-tab');  
+      inspectionChecklist.classList.add('hidden');  
+      records.classList.remove('hidden');  
+      displayRecords();  
+    });  
+  
+    displayRecords();  
+  </script>  
+</body>  
+</html>
